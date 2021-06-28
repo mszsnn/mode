@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中介者</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script>
+    class Bus {
+        constructor() {
+            // 乘客
+            this.passengers = {}
+        }
+
+
+        // 广播
+
+        broadcast(passenger, message = passenger) {
+            // 车上有人才广播
+            if(Object.keys(this.passengers).length) {
+
+                // 如果是针对某个顾客的
+                if(passenger.id && passenger.listen ) {
+                    
+                    if (this.passengers[passengers.id]) {
+                        this.passengers[passenger.id].listen(message);
+                    }
+                } else {
+
+                    // 广播给所有人
+                    Object.keys(this.passengers).forEach(id => {
+                        if(this.passengers[id].listen) {
+                            this.passengers[id].listen(message);
+                        }
+                    })
+
+                }
+            }
+        }
+
+        // 上车
+        aboard(passenger) {
+
+            this.passengers[passenger.id] = passenger;
+        }
+
+        // 下车
+
+        debus(passenger) {
+            this.passengers[passenger.id] = null;
+            delete this.passengers[passenger.id];
+            console.log(passenger.id + '下车')
+        }
+
+        start() {
+            this.broadcast({type: 1, message: '开车了'})
+        }
+
+        end() {
+            this.broadcast({type: 2, message: '停车'})
+        }
+    }
+
+
+    class Passenger {
+        constructor(id) {
+            this.id = id;
+        }
+        listen(message) {
+            console.log(this.id + '听到消息了');
+            if(Object.is(message, 2)) {
+                this.debus();
+            }
+        }
+
+        debus() {
+            console.log('到站了，' + this.id + '我现在要下车')
+            bus.debus(this);
+        }
+    }
+
+
+    const bus = new Bus();
+
+    const passenger1 = new Passenger(1);
+    const passenger2 = new Passenger(2);
+
+    bus.aboard(passenger1);
+    bus.aboard(passenger2);
+
+
+    setTimeout(bus.start.bind(bus), 2000);
+
+    setTimeout(() => {
+        bus.broadcast(passenger2, { type: 3, content: '同志你好，你没买票，请下车!' })
+        bus.debus(passenger2)
+    }, 3000)
+
+
+
+
+
+
+
+
+</script>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script>
+class Player {
+  constructor() {
+    // 观察者
+    this.watcher = {}
+  }
+
+  // 订阅
+  _subscription(event, callback) {
+    // 存储所有相关的订阅操作
+    this.watcher[event] = this.watcher[event] || [];
+    this.watcher[event].push(callback);
+  }
+
+  // 退订
+  _unsubscription(event, callback) {
+    if(callback) {
+      if (this.watcher[event]) {
+        let index =  this.watcher[event].findIndex(item => Object.is(callback, item));
+        if(~index) {
+          this.watcher[event].splice(index, 1);
+        }
+      }
+    } else {
+      this.watcher[event] = [];
+    }
+  }
+
+
+  // 发布
+  // 发布其实就是通知观察者执行订阅函数
+  _publish(event, data) {
+    if(this.watcher[event] && this.watcher[event].length) {
+      this.watcher[event].forEach(callback => {
+        callback.call(this, data);
+      });
+    }
+  }
+}
+
+
+
+
+// let video = new Player();
+
+// video._subscription('play', function (data) {
+//   console.log('播放啦', data)
+// })
+
+// video._subscription('play', function (data) {
+//   console.log('又一个播放啦', data)
+// })
+
+// setTimeout(() => {
+//   video._publish('play', '发布啦');
+// }, 2000)
+
+const asyncIterable = createAsyncIterable(['a', 'b']);
+
+console.log(asyncIterable)
+
+
+
+</script>
