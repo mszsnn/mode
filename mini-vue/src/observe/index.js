@@ -40,7 +40,6 @@ class Observe {
   }
 
   observeArray(value) {
-    console.log('循环', value);
     for (let i = 0; i < value.length; i++) {
       observe(value[i]);
     }
@@ -56,14 +55,12 @@ function defineReactive(data, key, value) {
 
   Object.defineProperty(data, key, {
     get() {
-      console.log('获取值');
       return value;
     },
     set(newValue) {
       if (newValue === value) {
         return;
       }
-      console.log('设置值')
       // TODO 更新视图  数据变化的时候，要在这里更新视图
       value = newValue;
     }

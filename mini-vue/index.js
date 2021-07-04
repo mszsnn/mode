@@ -1,5 +1,4 @@
 import Vue from './src/index'
-import OriginVue from 'vue'
 
 
 const options = {
@@ -13,18 +12,17 @@ const options = {
       },
       habit: [ '洗完', '吃饭', '擦地']
     }
-  }
+  },
+  el: '#app'
 }
 
 
 const vm = new Vue(options);
 
 
-const app = new OriginVue(options)
 
 
-console.log(vm, app);
+console.log(vm);
 
 
 
-vm.habit.push('哈哈');
