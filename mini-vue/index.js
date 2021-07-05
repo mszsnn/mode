@@ -21,7 +21,7 @@ const vm = new Vue(options);
 
 setTimeout(() => {
   vm.name = '张丽'
-  vm._update(vm._render())
+  vm.age = 100
 }, 2000)
 
 console.log(vm);

@@ -15,6 +15,9 @@ export  function mountComponent(vm, el) {
     vm._update(result);
   }
 
+
+  // 每个组件会生成一个watcher， watch 里面存储了 dep
+
   new Watcher(vm, updateComputed, null, true)
 }
 

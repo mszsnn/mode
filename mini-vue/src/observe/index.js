@@ -62,6 +62,7 @@ function defineReactive(data, key, value) {
         dep.depend();
       }
 
+      console.log('依赖收集', key, Dep.target )
       return value;
     },
     set(newValue) {

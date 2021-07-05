@@ -1,5 +1,5 @@
 // 每次new  watcher 会自增
-import {pushScopeId} from "vue";
+import { pushTarget, popTarget } from "./dep";
 
 let id = 0;
 
@@ -9,7 +9,7 @@ export default class Watcher {
     this.expOrFun = expOrFun;
     this.cb = cb; // 回调函数，watcher 更新更新之前可以执行 beforeUpdate 方法
     this.options = options;  // 额外选项
-    this.deps = [] // 用来存放 dep 容器
+    this.deps = [] // 用来存放 dep的 容器
 
     this.depsId = new Set() //  用来去重
     this.id = id++;  // watcher 唯一标识
@@ -22,8 +22,8 @@ export default class Watcher {
   }
 
   get() {
-    pushTarget(this);  // 先将实例target 指向当期那watcher
-    this.getter()
+    pushTarget(this);  // 先将实例target 指向当前 watcher
+    this.getter()   // 要做的事情  expOrFun, 当前指的是 mountComponent
     popTarget();
   }
 
@@ -32,8 +32,14 @@ export default class Watcher {
     if(!this.depsId.has(id)) {
       this.depsId.add(id);
       this.deps.push(dep);
+      // 这里 依赖将 watcher 添加在dep 里面， 同一个watcher 肯定是添加一次
+      dep.addSub(this);
     }
+  }
 
-    dep.addSub(this);
+
+  update() {
+    // 更新的时候， 为什么收集依赖？ 因为可能现在值变了， 依赖可能会发生变化
+    this.get();
   }
 }
