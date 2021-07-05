@@ -91,15 +91,9 @@ export function generate(ast) {
   // _c代表创建元素 _v代表创建文本 _s代表文Json.stringify--把对象解析成文本
 
 
-  const code = `
-     _c(
-       '${ast.tag}',
-        
-       ${ast.attrs.length ? `${genProps(ast.attrs)}` : 'undefined'}
-       
-       ${children ? `, ${children}` : ''} 
-     )
-  `
-
+  const code = `_c(
+    '${ast.tag}',
+    ${ast.attrs.length ? `${genProps(ast.attrs)}` : 'undefined'}
+    ${children ? `, ${children}` : ''})`
   return code;
 }

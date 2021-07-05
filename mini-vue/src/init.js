@@ -1,6 +1,6 @@
 import {initState} from './state.js'
 import {compareToFunction} from './compiler'
-
+import { mountComponent } from './lifecycle'
 // initMixin 把_init 方法挂载在 Vue 原型 供 Vue 实例调用
 
 
@@ -48,10 +48,12 @@ export function initMixin(Vue) {
       if (template) {
         options.render = compareToFunction(template);
       }
-
-      options.render()
-
     }
+
+
+
+    // 上述已经完成了template/el 的模板编译为render 函数， 接下来需要将  render 函数挂在到真实的 el 节点上面
+    return mountComponent(this, el);
 
   }
 }

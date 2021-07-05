@@ -1,4 +1,5 @@
 import {arrayMethods} from './array'
+import Dep from "./dep";
 
 
 class Observe {
@@ -51,18 +52,25 @@ function defineReactive(data, key, value) {
 
   observe(value);
 
-  // 此方法不能对对象的删除值和创建值进行处理
+  let dep = new Dep(); // 每个属性都需要有Dep
 
+  // 此方法不能对对象的删除值和创建值进行处理
   Object.defineProperty(data, key, {
     get() {
+      // 在页面取值的时候，将watcher  存储在deps 里面 ---------依赖收集
+      if (Dep.target) {
+        dep.depend();
+      }
+
       return value;
     },
     set(newValue) {
       if (newValue === value) {
         return;
       }
-      // TODO 更新视图  数据变化的时候，要在这里更新视图
+      observe(value);
       value = newValue;
+      dep.notify();  // 通知watcher 去更新 ------------ 派发更新
     }
   })
 

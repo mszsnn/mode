@@ -50,7 +50,7 @@ export function compareToFunction(template) {
 
 
   //   使用with语法改变作用域为this  之后调用render函数可以使用call改变this 方便code里面的变量取值
-  return new Function(`with(this) {return ${code}}`);
+  return new Function(`with(this) { return ${code} }`);
 
 }
 

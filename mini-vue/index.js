@@ -1,6 +1,5 @@
 import Vue from './src/index'
 
-
 const options = {
   data() {
     return {
@@ -16,11 +15,14 @@ const options = {
   el: '#app'
 }
 
-
 const vm = new Vue(options);
 
 
 
+setTimeout(() => {
+  vm.name = '张丽'
+  vm._update(vm._render())
+}, 2000)
 
 console.log(vm);
 
