@@ -6,6 +6,9 @@ class Observe {
   constructor(value) {
     // 正式因为性能原因
     // 这里需要对数组进行单独处理
+    this.value = value;
+    this.dep = new Dep(); //当数组使用7种重写方法时  是无法进行依赖收集和派发更新的  此属性主要辅助数组更新
+
 
     // 给每个响应的数组或者对象添加  __ob__ 属性来标识是个响应数据，
     // 并且对数组来讲很有用， 存储的值为响应的实例对象
@@ -50,8 +53,9 @@ class Observe {
 
 function defineReactive(data, key, value) {
 
-  observe(value);
+  let childOb = observe(value);
 
+  console.log('childOb',childOb);
   let dep = new Dep(); // 每个属性都需要有Dep
 
   // 此方法不能对对象的删除值和创建值进行处理
