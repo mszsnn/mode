@@ -39,7 +39,6 @@ export default class Watcher {
 
 
   update() {
-    // 更新的时候， 为什么收集依赖？ 因为可能现在值变了， 依赖可能会发生变化
     this.get();
   }
 }

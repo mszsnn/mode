@@ -9,7 +9,9 @@ const options = {
         width: 20,
         height: 30
       },
-      habit: [ '洗完', '吃饭', '擦地']
+      habit: [ {
+        name: 'lisi'
+      }, '吃饭', '擦地']
     }
   },
   el: '#app'
@@ -19,9 +21,9 @@ const vm = new Vue(options);
 
 
 
-// setTimeout(() => {
-//   vm.message.width = 100;
-// }, 2000)
+setTimeout(() => {
+  vm.habit[0].name ='wanguw'
+}, 2000)
 
 console.log(vm);
 

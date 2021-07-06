@@ -26,6 +26,8 @@ needHandler.forEach(name => {
 
 
     let insert;
+    // 拿到监测实例
+    const ob = this.__ob__;
 
     switch (name) {
       case 'push':
@@ -41,11 +43,13 @@ needHandler.forEach(name => {
 
     if(insert) {
       // 在这里应该是监测的
-      // 拿到监测实例
-      const ob = this.__ob__;
       ob.observeArray(insert);
     }
 
+    //数组派发更新 ob指的就是数组对应的Observer实例
+    // 我们在get的时候判断如果属性的值还是对象那么就在Observer实例的dep收集依赖
+    // 所以这里是一一对应的  可以直接更新
+    ob.dep.notify();
 
     // TODO 在这里进行数据的处理， 更新视图等操作
 

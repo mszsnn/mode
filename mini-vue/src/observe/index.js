@@ -4,9 +4,12 @@ import Dep from "./dep";
 
 class Observe {
   constructor(value) {
-    // 正式因为性能原因
-    // 这里需要对数组进行单独处理
+
     this.value = value;
+
+
+    // 正式因为性能原因
+    // 这里需要对数组进行处理
     this.dep = new Dep(); //当数组使用7种重写方法时  是无法进行依赖收集和派发更新的  此属性主要辅助数组更新
 
 
@@ -62,10 +65,26 @@ function defineReactive(data, key, value) {
   Object.defineProperty(data, key, {
     get() {
       // 在页面取值的时候，将watcher  存储在deps 里面 ---------依赖收集
+
+
+
+      // 如果对象属性的值是一个数组 那么执行 childOb.dep.depend()
+      // 收集数组的依赖 如果数组里面还包含数组 需要递归遍历收集
+      // 因为只有访问数据触发了 get 才会去收集依赖 一开始只是递归对数据进行响应式处理无法收集依赖 这两点需要分清
+
+
       if (Dep.target) {
         dep.depend();
       }
 
+      if(childOb) {
+        childOb.dep.depend();
+
+        if (Array.isArray(value)) {
+          // 如果内部还是数组
+          dependArray(value); // 不停的进行依赖收集
+        }
+      }
       console.log('依赖收集', key, Dep.target )
       return value;
     },
@@ -80,6 +99,22 @@ function defineReactive(data, key, value) {
   })
 
 }
+
+
+
+// 整体数组的收集这里不是很明白
+function dependArray(value) {
+  for (let e, i = 0, l = value.length; i < l; i++) {
+    e = value[i];
+    // e.__ob__代表e已经被响应式观测了 但是没有收集依赖 所以把他们收集到自己的Observer实例的dep里面
+    e && e.__ob__ && e.__ob__.dep.depend();
+    if (Array.isArray(e)) {
+      // 如果数组里面还有数组  就递归去收集依赖
+      dependArray(e);
+    }
+  }
+}
+
 
 
 export function observe(value) {
