@@ -1,6 +1,6 @@
 // 每次new  watcher 会自增
 import { pushTarget, popTarget } from "./dep";
-
+import { queueWatcher } from './scheduler'
 let id = 0;
 
 export default class Watcher {
@@ -39,6 +39,12 @@ export default class Watcher {
 
 
   update() {
+    // 如果每次更新的时候， 可以将数据变化暂时缓存起来， 之后一起更新一次
+    // 异步更新
+    queueWatcher(this);
+  }
+
+  run () {
     this.get();
   }
 }

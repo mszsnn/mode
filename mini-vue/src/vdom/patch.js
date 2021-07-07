@@ -17,6 +17,14 @@ export function patch(oldVnode, Vnode) {
     parentElm.insertBefore(el, oldVnode.nextSibling);
     parentElm.removeChild(oldVnode);
     return el;
+  } else {
+    // 异步更新的时候
+    // oldVnode 是虚拟dom
+    if (oldVnode.tag !== Vnode.tag) {
+      // 换了标签， 直接用新的换了旧的
+      oldVnode.el.parentNode.removeChild(createElm(Vnode), oldVnode.el);
+    }
+
   }
 }
 

@@ -1,6 +1,9 @@
 import { createElement, createTextNode } from "./vdom";
+import { nextTick} from "./util/next-tick";
 
 export function renderMixin(Vue) {
+  Vue.prototype.$nextTick = nextTick;
+
   // 将render 函数转化为 虚拟dom
   Vue.prototype._render = function () {
     const { render } = this.$options;
@@ -22,6 +25,8 @@ export function renderMixin(Vue) {
   Vue.prototype._s = function (val) {
     return val === null ? '' : typeof val === 'object' ? JSON.stringify(val) : val;
   }
+
+
 
 }
 

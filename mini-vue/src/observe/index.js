@@ -66,8 +66,6 @@ function defineReactive(data, key, value) {
     get() {
       // 在页面取值的时候，将watcher  存储在deps 里面 ---------依赖收集
 
-
-
       // 如果对象属性的值是一个数组 那么执行 childOb.dep.depend()
       // 收集数组的依赖 如果数组里面还包含数组 需要递归遍历收集
       // 因为只有访问数据触发了 get 才会去收集依赖 一开始只是递归对数据进行响应式处理无法收集依赖 这两点需要分清

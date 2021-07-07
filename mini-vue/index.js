@@ -23,6 +23,7 @@ const vm = new Vue(options);
 
 setTimeout(() => {
   vm.habit[0].name ='wanguw'
+  vm.message.width = 100;
 }, 2000)
 
 console.log(vm);
