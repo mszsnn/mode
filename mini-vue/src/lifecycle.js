@@ -11,7 +11,7 @@ export  function mountComponent(vm, el) {
 
   let updateComputed = () => {
     const result = vm._render()
-    console.log('render 虚拟dom 结果',result);
+    console.log('render 虚拟dom 结果',result.el, result);
     vm._update(result);
   }
 
@@ -23,7 +23,12 @@ export  function mountComponent(vm, el) {
 
 export function lifecycleMixin(Vue) {
   Vue.prototype._update = function (Vdom) {
-    // 源码这里不是这样
-    this.$el = patch(this.$el, Vdom);
+
+    const prevVnode = this._vnode;
+    if(prevVnode) {
+      this.$el = patch(prevVnode, Vdom);
+    } else {
+      this.$el = patch(this.$el, Vdom);
+    }
   }
 }

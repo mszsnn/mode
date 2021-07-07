@@ -51,7 +51,6 @@ needHandler.forEach(name => {
     // 所以这里是一一对应的  可以直接更新
     ob.dep.notify();
 
-    // TODO 在这里进行数据的处理， 更新视图等操作
 
     return result
   }
