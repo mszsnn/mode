@@ -17,6 +17,12 @@ const options = {
   el: '#app'
 }
 
+Vue.mixin({
+  created() {
+    console.log(1);
+  }
+})
+
 const vm = new Vue(options);
 
 

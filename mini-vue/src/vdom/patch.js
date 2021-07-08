@@ -125,16 +125,18 @@ function updateChildren(parent, oldCh, newCh)  {
     } else {
       // 如果以上的情况都不满足， 需要暴力对比，看看旧的这个节点到底去了哪里
 
+      // 因为是以新的为准则， 更新旧的
       let moveIndex = map[newStartVnode.key];
 
       if (!moveIndex) {
         parent.insertBefore(createElm(newStartVnode), oldStartVnode.el);
-        patch(moveVnode, newStartVnode);
       } else {
         let moveVnode = oldCh[moveIndex];
         oldCh[moveIndex] = undefined;
         parent.insertBefore(moveVnode.el, oldStartVnode.el);
+        patch(moveVnode, newStartVnode);
       }
+      newStartVnode = newCh[++newStartVnode]
     }
 
 

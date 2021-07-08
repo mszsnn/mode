@@ -1,6 +1,9 @@
 import {initState} from './state.js'
 import {compareToFunction} from './compiler'
 import { mountComponent } from './lifecycle'
+import {mergeOptions} from "./util";
+import { callHook } from "./lifecycle";
+
 // initMixin 把_init 方法挂载在 Vue 原型 供 Vue 实例调用
 
 
@@ -10,11 +13,18 @@ export function initMixin(Vue) {
 
   Vue.prototype._init = function (option) {
     // 实例this
-    this.$options = option;
 
+    // 需要将全局混入的东西合并进来
+
+    console.log('混入', this.constructor.option);
+
+    this.$options = mergeOptions(this.constructor.option, option);
+
+    callHook(this, 'beforeCreate')
     //1 接下来进行状态的初始化
     initState(this);
 
+    callHook(this, 'created')
 
     //2 如果有el 属性再进行模板挂载
 
@@ -56,4 +66,5 @@ export function initMixin(Vue) {
     return mountComponent(this, el);
 
   }
+
 }

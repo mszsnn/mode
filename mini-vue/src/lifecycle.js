@@ -2,12 +2,15 @@
 import { patch } from './vdom/patch'
 import Watcher from "./observe/watcher";
 
+
 export  function mountComponent(vm, el) {
   // 上一步模板编译已经生成了render 函数， 接下来
   // 1  生成 虚拟dom   vm._render()
   // 2 将 虚拟dom 转化为 真实dom  vm._update()
 
   vm.$el = el;
+
+  callHook(vm, 'beforeMounted')
 
   let updateComputed = () => {
     const result = vm._render()
@@ -29,6 +32,17 @@ export function lifecycleMixin(Vue) {
       this.$el = patch(prevVnode, Vdom);
     } else {
       this.$el = patch(this.$el, Vdom);
+      callHook(this, 'mounted')
+    }
+  }
+}
+
+
+export function callHook(vm, hook) {
+  const handlers = vm.$options[hook];
+  if (handlers) {
+    for (let i = 0; i < handlers.length; i++) {
+      handlers[i].call(vm); //生命周期里面的this指向当前实例
     }
   }
 }
