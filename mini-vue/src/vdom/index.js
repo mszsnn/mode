@@ -1,3 +1,5 @@
+import {isReservedTag} from "../util";
+
 export default class Vnode {
   constructor(tag, data, key, children, text) {
     this.tag = tag;
@@ -12,6 +14,10 @@ export default class Vnode {
 
 export function createElement(tag, data = {} , ...children) {
   const key = data.key;
+
+  if(isReservedTag(tag)) {
+
+  }
   return new Vnode(tag, data, key, children)
 }
 

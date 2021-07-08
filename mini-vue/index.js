@@ -23,6 +23,8 @@ Vue.mixin({
   }
 })
 
+
+
 const vm = new Vue(options);
 
 
