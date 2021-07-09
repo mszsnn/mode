@@ -15,7 +15,7 @@ export function renderMixin(Vue) {
   // render 函数中含有   _c 生成元素  _v 生成文本  _s JSON.stringify()
 
   Vue.prototype._c = function (...arg) {
-    return createElement(...arg)
+    return createElement(this, ...arg)
   }
 
   Vue.prototype._v = function (text) {

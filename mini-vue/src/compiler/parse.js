@@ -10,73 +10,78 @@ const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`)   // 匹配结束标签
 const attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/; // 匹配属性  形如 id="app"
 
 
-let root, currentParent;
 
-let stack = [] // 维护栈结构
+
+
+
+// 将template编译为ast, 使用大量正则匹配
+
+export function parse(html) {
+  let root, currentParent;
+
+  let stack = [] // 维护栈结构
 
 
 // 标识元素节点和文本节点
 
 
-const ELEMENT_TYPE = 1;
+  const ELEMENT_TYPE = 1;
 
-const TEXT_TYPE = 3
+  const TEXT_TYPE = 3
+
 
 
 // 生成ast 方法
 
-function createASTElement(tagName, attrs) {
-  return {
-    tag: tagName,
-    attrs,
-    parent: null,
-    children: [],
-    type: ELEMENT_TYPE
+  function createASTElement(tagName, attrs) {
+    return {
+      tag: tagName,
+      attrs,
+      parent: null,
+      children: [],
+      type: ELEMENT_TYPE
+    }
   }
-}
 
 
 // 对开始标签进行处理
 
-function handleStartTag({tagName, attrs}) {
-  // 一个 标签就是一个元素节点
-  let element = createASTElement(tagName, attrs);
-  if (!root) {
-    root = element;
+  function handleStartTag({tagName, attrs}) {
+    // 一个 标签就是一个元素节点
+    let element = createASTElement(tagName, attrs);
+    if (!root) {
+      root = element;
+    }
+
+    currentParent = element;
+    stack.push(element);
+
   }
 
-  currentParent = element;
-  stack.push(element);
+  function handleEndTag() {
+    // 对于匹配到结束标签的时候，就意味着能找到一个完整元素，应该是出栈
+    let element = stack.pop(); // 栈顶元素就是当前元素
 
-}
+    // 栈顶的上个元素就是父元素
+    currentParent = stack[stack.length - 1];
 
-function handleEndTag() {
-  // 对于匹配到结束标签的时候，就意味着能找到一个完整元素，应该是出栈
-  let element = stack.pop(); // 栈顶元素就是当前元素
-
-  // 栈顶的上个元素就是父元素
-  currentParent = stack[stack.length - 1];
-
-  if (currentParent) {
-    element.parent = currentParent;
-    currentParent.children.push(element);
+    if (currentParent) {
+      element.parent = currentParent;
+      currentParent.children.push(element);
+    }
   }
-}
 
 // 处理文本
-function handleChars(text) {
-  text = text.trim();
-  if (text) {
-    currentParent.children.push({
-      type: TEXT_TYPE,
-      text
-    })
+  function handleChars(text) {
+    text = text.trim();
+    if (text) {
+      currentParent.children.push({
+        type: TEXT_TYPE,
+        text
+      })
+    }
   }
-}
 
-// 将template编译为ast, 使用大量正则匹配
-
-export function parse(html) {
 
   while (html) {
     // 文本结束

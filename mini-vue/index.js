@@ -14,6 +14,13 @@ const options = {
       }, '吃饭', '擦地']
     }
   },
+  mounted() {
+    console.log('父组件mouneted')
+    setTimeout(() => {
+      this.habit[0].name ='wanguw'
+      this.message.width = 100;
+    }, 2000)
+  },
   el: '#app'
 }
 
@@ -23,16 +30,22 @@ Vue.mixin({
   }
 })
 
-
+Vue.component('tag', {
+  data() {
+    return {
+      name: 'children'
+    }
+  },
+  mounted() {
+    console.log('子组件mouneted')
+    setTimeout(() => {
+      this.name = '变化了'
+    }, 2000)
+  },
+  template: `<span>{{name}}</span>`
+})
 
 const vm = new Vue(options);
-
-
-
-setTimeout(() => {
-  vm.habit[0].name ='wanguw'
-  vm.message.width = 100;
-}, 2000)
 
 console.log(vm);
 

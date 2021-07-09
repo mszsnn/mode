@@ -1,60 +1,67 @@
 // 主要是用来渲染视图和更新视图
 
+import {createCommentVNode} from "vue";
+
 export function patch(oldVnode, Vnode) {
   // 判断传入的oldVnode是否是一个真实元素
   // 这里很关键  初次渲染 传入的vm.$el就是咱们传入的el选项  所以是真实dom
   // 如果不是初始渲染而是视图更新的时候  vm.$el就被替换成了更新之前的老的虚拟dom
-  const isRealElement = oldVnode.nodeType
-  if (isRealElement) {
-    // 初次渲染逻辑
-    const parentElm = oldVnode.parentNode; // 父元素
-    let el = createElm(Vnode);
-
-    // 插入到 老的el节点下一个节点的前面 就相当于插入到老的el节点的后面
-    // 这里不直接使用父元素appendChild是为了不破坏替换的位置
-
-    parentElm.insertBefore(el, oldVnode.nextSibling);
-    parentElm.removeChild(oldVnode);
-    return el;
+  if (!oldVnode) {
+    return createElm(Vnode);
   } else {
-    // 异步更新的时候
-    // oldVnode 是虚拟dom
-    if (oldVnode.tag !== Vnode.tag) {
-      // 换了标签， 直接用新的换了旧的
-      oldVnode.el.parentNode.removeChild(createElm(Vnode), oldVnode.el);
-    }
+    const isRealElement = oldVnode.nodeType
+    if (isRealElement) {
+      // 初次渲染逻辑
+      const parentElm = oldVnode.parentNode; // 父元素
+      let el = createElm(Vnode);
 
-    // 如果是文本节点
-    if (!oldVnode.tag) {
-      if(oldVnode.text !== Vnode.text) {
-        oldVnode.el.textContent = Vnode.text;
+      // 插入到 老的el节点下一个节点的前面 就相当于插入到老的el节点的后面
+      // 这里不直接使用父元素appendChild是为了不破坏替换的位置
+
+      parentElm.insertBefore(el, oldVnode.nextSibling);
+      parentElm.removeChild(oldVnode);
+      return el;
+    } else {
+      // 异步更新的时候
+      // oldVnode 是虚拟dom
+      if (oldVnode.tag !== Vnode.tag) {
+        // 换了标签， 直接用新的换了旧的
+        oldVnode.el.parentNode.removeChild(createElm(Vnode), oldVnode.el);
+      }
+
+      // 如果是文本节点
+      if (!oldVnode.tag) {
+        if(oldVnode.text !== Vnode.text) {
+          oldVnode.el.textContent = Vnode.text;
+        }
+      }
+
+
+      // 不符合以上两种代表
+
+      const el = Vnode.el = oldVnode.el;
+      updateProperties(Vnode, oldVnode.data);
+
+      const oldCh = oldVnode.children || []; // 旧的真是子元素
+      const newCh = Vnode.children || [];  // 新的虚拟子节点
+
+
+      if(oldCh.length > 0 && newCh.length > 0) {
+        // 新老节点都存在 核心比对
+        updateChildren(el, oldCh, newCh);
+      } else if (oldCh.length) {
+        // 老的有， 新的没有， 那么直接清除旧元素的所有子节点
+        el.innerHTML = '';
+      } else {
+        // 新的有，旧的没有
+        // 一个一个追加
+        newCh.forEach(item => {
+          el.appendChild(createElm(item));
+        })
       }
     }
-
-
-    // 不符合以上两种代表
-
-    const el = Vnode.el = oldVnode.el;
-    updateProperties(Vnode, oldVnode.data);
-
-    const oldCh = oldVnode.children || []; // 旧的真是子元素
-    const newCh = Vnode.children || [];  // 新的虚拟子节点
-
-
-    if(oldCh.length > 0 && newCh.length > 0) {
-      // 新老节点都存在 核心比对
-      updateChildren(el, oldCh, newCh);
-    } else if (oldCh.length) {
-      // 老的有， 新的没有， 那么直接清除旧元素的所有子节点
-      el.innerHTML = '';
-    } else {
-      // 新的有，旧的没有
-      // 一个一个追加
-      newCh.forEach(item => {
-        el.appendChild(createElm(item));
-      })
-    }
   }
+
 }
 
 
@@ -163,7 +170,16 @@ function updateChildren(parent, oldCh, newCh)  {
 
 }
 
-
+function createComponent(vnode) {
+  let data = vnode.data;
+  if( (data = data.hook) && (data = data.init)) {
+    //写这样洋气， 其实是调用了data.hook.init
+    data(vnode)
+  }
+  if (vnode.componentInstance) {
+    return true;
+  }
+}
 
 function createElm(Vnode) {
   let {tag, data, key, children, text } = Vnode;
@@ -171,6 +187,10 @@ function createElm(Vnode) {
   if( tag === undefined ) {
     Vnode.el = document.createTextNode(text);
   } else {
+    if(createComponent(Vnode)) {
+      return Vnode.componentInstance.$el
+    }
+
     Vnode.el = document.createElement(tag);
     // 解析虚拟dom 属性
     updateProperties(Vnode);

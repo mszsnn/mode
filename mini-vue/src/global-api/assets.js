@@ -7,8 +7,7 @@ export function initAssetRegisters (Vue) {
 
   ASSETS_TYPE.forEach((type) => {
     Vue[type] = function (id, definition) {
-      this.options[type + "s"][id] = definition;
+      this.option[type + "s"][id] = definition;
     }
   });
-
 }

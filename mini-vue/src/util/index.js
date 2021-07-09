@@ -91,7 +91,7 @@ export function mergeOptions (parent, child) {
 
 
 
-export function isReservedTag() {
+export function isReservedTag(tagName) {
   //判断是不是常规html标签
   // 定义常见标签
   let str =
