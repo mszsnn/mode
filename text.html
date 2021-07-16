@@ -7,70 +7,142 @@
     <title>Document</title>
 </head>
 <body>
-    
+
 </body>
 </html>
 <script>
-class Player {
-  constructor() {
-    // 观察者
-    this.watcher = {}
-  }
 
-  // 订阅
-  _subscription(event, callback) {
-    // 存储所有相关的订阅操作
-    this.watcher[event] = this.watcher[event] || [];
-    this.watcher[event].push(callback);
-  }
+  function myPromise(executor) {
+    this.status = 'pending'; // 初始为pending状态
+    this.data = undefined;  // promise 的值
+    this.onResolvedCallback = []; // resolve 回调合集
+    this.onRejectedCallback = []; // reject 回调合集
 
-  // 退订
-  _unsubscription(event, callback) {
-    if(callback) {
-      if (this.watcher[event]) {
-        let index =  this.watcher[event].findIndex(item => Object.is(callback, item));
-        if(~index) {
-          this.watcher[event].splice(index, 1);
-        }
+    let self = this;
+
+
+    // value 拿到的异步值
+    function resolve(value) {
+      if (value instanceof Promise) {
+        return value.then(resolve, reject);
       }
-    } else {
-      this.watcher[event] = [];
+      // 状态的改变也应该是异步的
+      if (self.status !==  'pending') return;
+      self.status = 'resolved';
+      self.data = value;
+      self.onResolvedCallback.forEach(callback => {
+        callback(value);
+      })
+    }
+
+    // reason 错误的原因
+    function reject(reason) {
+      if (self.status !==  'pending') return;
+      self.status = 'rejected';
+      self.data = reason;
+      self.onRejectedCallback.forEach(callback => {
+        callback(reason);
+      })
+    }
+
+    // 在回调函数的执行过程中可能会出现错误， 出现错误的时候直接reject
+    try {
+      executor(resolve, reject);
+    } catch (e) {
+      reject(e);
     }
   }
 
+  function resolvePromise(promise2, x, resolve, reject) {
 
-  // 发布
-  // 发布其实就是通知观察者执行订阅函数
-  _publish(event, data) {
-    if(this.watcher[event] && this.watcher[event].length) {
-      this.watcher[event].forEach(callback => {
-        callback.call(this, data);
-      });
+  }
+  // resolveCallback rejectCallback 成功回调和失败回调
+
+  myPromise.prototype.then = function (resolveCallback, rejectCallback) {
+    let self = this;
+    let promise2;
+    // 如果这俩不是函数， 便直接忽略
+    resolveCallback = typeof resolveCallback === 'function' ?  resolveCallback: null;
+    rejectCallback = typeof rejectCallback === 'function' ?  rejectCallback: null;
+
+    if (this.status === 'resolved') {
+      // 成功
+      return promise2 = new Promise(function (resolve, reject){
+        setTimeout(function () {
+          try {
+            let x = resolveCallback(self.data);
+            resolvePromise(promise2, x, resolve, reject);
+          } catch (e) {
+            reject(e);
+          }
+        })
+      })
+    }
+
+    if (this.status === 'rejected') {
+      // 失败
+      return promise2 = new Promise(function (resolve, reject){
+        setTimeout(function () {
+          try {
+            let x = resolveCallback(self.data);
+          } catch (e) {
+            reject(e);
+          }
+        })
+      })
+    }
+
+    if (this.status === 'pending') {
+      // 执行中
+      return promise2 = new Promise(function (resolve, reject){
+        self.onResolvedCallback.push(function (value) {
+          try {
+            let x = resolveCallback(value);
+          } catch (e) {
+            reject(e);
+          }
+        })
+        self.onRejectedCallback.push(function (value) {
+          try {
+            let x = rejectCallback(value);
+          } catch (e) {
+            reject(e);
+          }
+        })
+      })
     }
   }
-}
+
+  myPromise.prototype.catch = function (rejectCallback) {
+    return this.then(null, rejectCallback);
+  }
+
+  // let my = new myPromise(function (resolve, reject) {
+  //   console.log(1);
+  //   resolve('resolve');
+  // })
+  //
+  // my.then(res => {
+  //   console.log('then')
+  // })
+  // my.then(res => {
+  //   console.log('then2')
+  // })
+  // console.log(my);
 
 
 
-
-// let video = new Player();
-
-// video._subscription('play', function (data) {
-//   console.log('播放啦', data)
-// })
-
-// video._subscription('play', function (data) {
-//   console.log('又一个播放啦', data)
-// })
-
-// setTimeout(() => {
-//   video._publish('play', '发布啦');
-// }, 2000)
-
-const asyncIterable = createAsyncIterable(['a', 'b']);
-
-console.log(asyncIterable)
-
-
+  // let promise = new Promise(function (resolve, reject) {
+  //   // resolve(1);
+  //   reject('reject')
+  // })
+  //
+  // promise.then(res => {
+  //   console.log(1);
+  // }).catch(e => {
+  //   console.log(e);
+  // }).then(res => {
+  //   console.log(3);
+  // })
 
 </script>
