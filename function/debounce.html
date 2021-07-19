@@ -1,0 +1,23 @@
+<button  id="box">按钮</button>
+
+<script>
+    // 规定时间里面仅仅执行一次， 如果一直触发， 便一直清除
+    function debounce(fn, delay) {
+      let t;
+      return function () {
+        let args = arguments;
+        if (t) {
+          clearTimeout(t);
+        }
+        t = setTimeout(() => {
+          fn.apply(this, args); // 改变this指向为调用debounce所指的对象
+        }, delay);
+      }
+    }
+
+    document.querySelector('#box').onclick = debounce(function () {
+      console.log(1);
+    }, 1000)
+
+
+</script>

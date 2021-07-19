@@ -1,0 +1,25 @@
+<button  id="box">按钮</button>
+
+<script>
+    // 每个delay 执行一次
+    function throttle(fn, delay) {
+      let t;
+      return function () {
+        let args = arguments;
+        if (t) {
+          return;
+        }
+        t = setTimeout(() => {
+          fn.apply(this, args); // 改变this指向为调用debounce所指的对象
+          clearTimeout(t)
+          t = 0;
+        }, delay);
+      }
+    }
+
+    document.querySelector('#box').onclick = throttle(function () {
+      console.log(1);
+    }, 1000)
+
+
+</script>

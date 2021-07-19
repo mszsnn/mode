@@ -1,4 +1,3 @@
-
 function myPromise(executor) {
   this.status = 'pending'; // 初始为pending状态
   this.data = undefined;  // promise 的值
@@ -6,35 +5,33 @@ function myPromise(executor) {
   this.onRejectedCallback = []; // reject 回调合集
 
   let self = this;
+
+
   // value 拿到的异步值
   function resolve(value) {
     if (value instanceof Promise) {
       return value.then(resolve, reject);
     }
     // 状态的改变也应该是异步的
-    setTimeout (function () {
-      if (self.status !==  'pending') return;
-      self.status = 'resolved';
-      self.data = value;
-      self.onResolvedCallback.forEach(callback => {
-        callback(value);
-      })
-    }, 0)
+    if (self.status !==  'pending') return;
+    self.status = 'resolved';
+    self.data = value;
+    self.onResolvedCallback.forEach(callback => {
+      callback(value);
+    })
   }
 
   // reason 错误的原因
   function reject(reason) {
-    setTimeout(function () {
-      if(self.status !==  'pending') return;
-      self.status = 'rejected';
-      self.data = reason;
-      self.onRejectedCallback.forEach(callback => {
-        callback(reason);
-      })
-    }, 0)
+    if (self.status !==  'pending') return;
+    self.status = 'rejected';
+    self.data = reason;
+    self.onRejectedCallback.forEach(callback => {
+      callback(reason);
+    })
   }
 
-// 在回调函数的执行过程中可能会出现错误， 出现错误的时候直接reject
+  // 在回调函数的执行过程中可能会出现错误， 出现错误的时候直接reject
   try {
     executor(resolve, reject);
   } catch (e) {
@@ -57,6 +54,7 @@ myPromise.prototype.then = function (resolveCallback, rejectCallback) {
       setTimeout(function () {
         try {
           let x = resolveCallback(self.data);
+          x instanceof myPromise ? x.then(resolve, reject) : resolve(x);
         } catch (e) {
           reject(e);
         }
@@ -69,7 +67,8 @@ myPromise.prototype.then = function (resolveCallback, rejectCallback) {
     return promise2 = new Promise(function (resolve, reject){
       setTimeout(function () {
         try {
-          let x = resolveCallback(self.data);
+          let x = rejectCallback(self.data);
+          x instanceof myPromise ? x.then(resolve, reject) : reject(x);
         } catch (e) {
           reject(e);
         }
@@ -87,7 +86,6 @@ myPromise.prototype.then = function (resolveCallback, rejectCallback) {
           reject(e);
         }
       })
-
       self.onRejectedCallback.push(function (value) {
         try {
           let x = rejectCallback(value);
@@ -97,6 +95,10 @@ myPromise.prototype.then = function (resolveCallback, rejectCallback) {
       })
     })
   }
+}
+
+myPromise.prototype.catch = function (rejectCallback) {
+  return this.then(null, rejectCallback);
 }
 
 

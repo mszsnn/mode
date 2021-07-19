@@ -1,0 +1,32 @@
+<script>
+
+  function fun () {
+    console.log(this)
+  }
+
+  Function.prototype.myCall = function (target, ...arg) {
+    let key = Symbol();
+    target[key] = this;
+    return target[key](...arg);
+  }
+
+  Function.prototype.myBind = function (target, ...arg) {
+    let key = Symbol();
+    target[key] = this;
+    return function () {
+      target[key](...arg)
+    }
+  }
+
+  let obj = {
+    name: 'list'
+  }
+
+  let f = fun.myBind(obj);
+
+  f();
+
+
+
+
+</script>

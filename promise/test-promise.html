@@ -53,9 +53,6 @@
     }
   }
 
-  function resolvePromise(promise2, x, resolve, reject) {
-
-  }
   // resolveCallback rejectCallback 成功回调和失败回调
 
   myPromise.prototype.then = function (resolveCallback, rejectCallback) {
@@ -71,7 +68,7 @@
         setTimeout(function () {
           try {
             let x = resolveCallback(self.data);
-            resolvePromise(promise2, x, resolve, reject);
+            x instanceof myPromise ? x.then(resolve, reject) : resolve(x);
           } catch (e) {
             reject(e);
           }
@@ -84,7 +81,8 @@
       return promise2 = new Promise(function (resolve, reject){
         setTimeout(function () {
           try {
-            let x = resolveCallback(self.data);
+            let x = rejectCallback(self.data);
+            x instanceof myPromise ? x.then(resolve, reject) : reject(x);
           } catch (e) {
             reject(e);
           }
