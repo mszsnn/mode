@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul>
+    <ul>
+        <li><a href='/home'>home</a></li>
+        <li><a href='/about'>about</a></li>
+
+        <div id="routeView"></div>
+    </ul>
+</ul>
+
+</body>
+</html>
+<script>
+  let routerView = document.querySelector('#routeView');
+
+  window.addEventListener('popstate', function (e) {
+    // 当使用history back  go  forword 会触发
+    routerView.innerHTML = location.pathname;
+  })
+
+
+  // 页面第一次加载不会触发hashChange事件
+
+  window.addEventListener('DOMContentLoaded', function () {
+    routerView.innerHTML = location.pathname;
+
+    let links = document.querySelectorAll('a[href]');
+    links.forEach(a => {
+      a.onclick = function (e) {
+        e.preventDefault();
+        history.pushState(null, '',a.getAttribute('href'));
+        routerView.innerHTML = location.pathname;
+      }
+    })
+  })
+</script>

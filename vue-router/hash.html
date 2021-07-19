@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul>
+    <ul>
+        <!-- 定义路由 -->
+        <li><a href="#/home">home</a></li>
+        <li><a href="#/about">about</a></li>
+
+        <!-- 渲染路由对应的 UI -->
+        <div id="routeView"></div>
+    </ul>
+</ul>
+
+</body>
+</html>
+<script>
+    let routerView = document.querySelector('#routeView');
+
+    window.addEventListener('hashchange', function (e) {
+      let hash = location.hash;
+      console.log(hash);
+      routerView.innerHTML = hash;
+    })
+
+
+    // 页面第一次加载不会触发hashChange事件
+
+    window.addEventListener('DOMContentLoaded', function () {
+      if(!location.hash) {
+        location.href = '/'
+      } else {
+        routerView.innerHTML = location.hash;
+      }
+    })
+</script>
