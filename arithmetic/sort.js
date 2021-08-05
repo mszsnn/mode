@@ -1,4 +1,5 @@
 class Sort {
+
   constructor(arr) {
     this.arr = arr || [];
   }
@@ -74,12 +75,12 @@ class Sort {
 
     for(let i = 1; i< this.arr.length ;i++) {
       let tem = this.arr[i]  // 要插入的元素
-    
+
       for(let j = i - 1; j >= 0 && this.arr[j] > tem; j--) {
         this.arr[j + 1] = this.arr[j];
       }
 
-      this.arr[j + 1] = tem; 
+      this.arr[j + 1] = tem;
     }
 
 
@@ -160,9 +161,9 @@ class Sort {
     }
 
     for(let i = pos; i >= 1 ; i = Math.trunc(i / 5)) {
-      
+
       for (let j = i; j < N; j++) {
-        let tmp = this.arr[j] 
+        let tmp = this.arr[j]
 
         let k = j - i
         for(k; k >= 0 && this.arr[k] > tmp; k = k - i) {
@@ -247,7 +248,7 @@ class Sort {
      // 找到基准的中间值， 将数据按照基准值分为比基准大的值和比基准值晓得数组
 
     // 这种算法使用了新的空间 空间复杂度比较高
-    if(arr.length <=1) { 
+    if(arr.length <=1) {
       return arr;
     }
     let middle = Math.floor( arr.length / 2);
@@ -310,7 +311,7 @@ class Sort {
     // 栈里面存在的其实是开始位置很结束位置 ， 不断改变元素里面的位置
     stack.push(0);
     stack.push(arr.length - 1);
-    
+
 
     // 只要存在栈的栈顶有元素就继续循环
     while(stack[stack.length -1] >= 0) {
@@ -350,7 +351,7 @@ class Sort {
     for (let i = 0; i< arr.length; i++) {
       min = arr[i] < min? arr[i]: min;
       max = arr[i] > max? arr[i]: max;
-      count[arr[i]] = count[arr[i]] ? count[arr[i]] + 1 : 1; 
+      count[arr[i]] = count[arr[i]] ? count[arr[i]] + 1 : 1;
     }
 
     // 将计数好的数据进行排序
@@ -371,7 +372,7 @@ class Sort {
   // 1 首先划分桶， 确定桶的个数
   // 2  遍历数据， 将数据放置在每个桶的内部
   // 3  将每个桶进行排序， 然后依次拿出数据来（有可能使用到其他的排序方式）
-  
+
 
   bucket(arr) {
     if(arr.length <=1) {
@@ -405,8 +406,8 @@ class Sort {
   }
 
 
-  /* 基数排序适用的范围 
-    整数  每个数值大于0  
+  /* 基数排序适用的范围
+    整数  每个数值大于0
     按照每一个位数进行排序， 一共十个桶 ， 0-9
   */
 
@@ -437,7 +438,7 @@ class Sort {
           arr[pos++] = bucket[j].shift();
         }
       }
-      
+
     }
 
     return arr;

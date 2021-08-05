@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    div {
+        width: 200px;
+        height: 200px;
+        margin: 100px;
+    }
+
+</style>
+<body>
+<div></div>
+<div></div>
+</body>
+</html>
+<script>
+
+    let arr = [1,2,3];
+    Object.defineProperty(arr, '0', {
+      set() {
+        console.log(1);
+      }
+    })
+</script>
