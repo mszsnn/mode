@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>index</h2>
+
+<button onclick="fun()">按钮</button>
+<iframe src="./a.html"  frameborder="0"></iframe>
+</body>
+</html>
+<script>
+    let result = window.open('./a.html');
+    function fun() {
+      window.frames[0].postMessage({
+        name: 'lisi'
+      }, '*')
+
+      result.postMessage({
+        name: 'lisi'
+      }, '*')
+    }
+
+
+
+</script>
+

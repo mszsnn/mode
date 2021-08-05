@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>index</h2>
+
+<button onclick="fun()">按钮</button>
+<iframe src="./a.html" frameborder="0"></iframe>
+<iframe src="./b.html" frameborder="0"></iframe>
+</body>
+</html>
+<script>
+    let channel = new BroadcastChannel('demo');
+
+    channel.onmessage = function (e) {
+      console.log(e, 'index');
+    }
+
+    function fun() {
+      console.log(1);
+      channel.postMessage({
+        name: 'lisit'
+      })
+    }
+
+</script>
+

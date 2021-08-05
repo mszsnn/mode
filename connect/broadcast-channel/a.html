@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+
+
+    .Article>li {
+        float: left;
+        margin: 0 10px -9999px 0;
+        padding-bottom: 9999px;
+        background: #4577dc;
+        width: 200px;
+        color: #fff;
+    }
+
+    .Article>li>p {
+        padding: 10px;
+    }
+</style>
+<body>
+<ul class="Article">
+
+</ul>
+<script>
+    console.log('--',window.getComputedStyle(document.querySelector('ul.Article')).backgroundColor)
+</script>
+<style>
+    .Article {
+        background-color: red;
+    }
+</style>
+</body>
+</html>
+<script>
+  let channel = new BroadcastChannel('demo');
+
+  channel.onmessage = function (e) {
+    console.log(e, 'a');
+  }
+
+  channel.close();
+</script>
