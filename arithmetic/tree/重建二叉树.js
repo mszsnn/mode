@@ -16,40 +16,34 @@
 
 // 建议递归解决问题
 
+function tree(pre, vin) {
+
+}
+
 function reConstructBinaryTree(pre, vin)
 {
   // write code here
-  let head = {}
 
-  const stack = [
-    pre,
-    vin
-  ];
-
-  while(stack.length) {
-    let v = stack.pop();  // 中序
-    let p = stack.pop(); // 前序
-
-    const head = {
-      val: p[0]
-    }
-    const index = v.indexOf(p[0]);
-    let leftv = v.slice(0, index);
-    let rightv = v.slice(index + 1);
-
-    let leftp = p.slice(1, 1 + leftv.length);
-    let rightp = p.slice(1 + rightv.length);
-
-    let left = {
-      val: leftp[0] || null,
-    }
-    let right = {
-      val: rightp[0] || null
-    }
-
-    head.left = left;
-    head.right = right;
-
+  if(!pre.length || !vin.length) {
+    return null
   }
 
+  let head = {
+    val: pre[0],
+  };
+
+  const index = vin.indexOf(pre[0]);
+  let leftv = vin.slice(0, index);
+  let rightv = vin.slice(index + 1);
+
+  let leftp = pre.slice(1, 1 + leftv.length);
+  let rightp = pre.slice(1 + rightv.length);
+
+  let left = reConstructBinaryTree(leftp, leftv)
+  let right = reConstructBinaryTree(rightp, rightv);
+
+  head.left = left;
+  head.right = right;
+
+  return head;
 }
