@@ -10,3 +10,69 @@
 
 
 // [1,2,3,4,5,6,7,0]  7
+
+// 使用归并排序，然后再排序的过程中，计算逆序
+
+
+// 归并排序是分支的思想
+
+
+
+function InversePairs(data)
+{
+  // write code here
+  if(!data.length) return 0;
+  let copy = JSON.parse(JSON.stringify(data))
+  return sort(data, 0, data.length - 1, copy);
+}
+
+
+function sort(data, start, end, copy) {
+  if(start >= end) return 0;
+
+  let mid = Math.floor((start + end) / 2);
+
+  console.log(start, mid, end);
+  let left = sort(data, start, mid, copy);
+  let right = sort(data, mid + 1, end, copy);
+
+  let merge = Merge(data, start, mid, end, copy);
+
+  console.log('left + right + merge',left, right , merge);
+  return left + right + merge;
+}
+
+function Merge(data, start, mid, end, copy) {
+  let i = start;
+  let j = mid + 1;
+  let count = 0;
+  for (let k = start; k <= end; k++ ) {
+
+    if (i === mid + 1) {
+      data[k] = copy[j];  // i 用完了， j 还没完
+      j++;
+    } else if (j === end + 1) {
+      data[k] = copy[i];
+      i++;
+    } else {
+      //  i j  都有的时候
+
+      if(copy[i] <= copy[j]) {
+        data[k] = copy[i];
+        i++;
+      } else {
+        data[k] = copy[j];
+        j++;
+        count += (mid - i + 1);
+      }
+    }
+
+
+
+  }
+
+  return count
+}
+
+
+console.log(InversePairs([1,2,3,4,5,6,7,0]));

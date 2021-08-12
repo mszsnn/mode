@@ -11,3 +11,26 @@
 // 给定 target = 7，返回 true。
 //
 // 给定 target = 3，返回 false
+
+// 从左下角或者右上角往对角方向走
+
+
+function Find(target, array)
+{
+  // write code here
+  let y = array[0].length - 1;
+  let x = 0;
+
+  while (y >= 0 && x < array.length) {
+    if(array[x][y] === target) {
+      return true;
+    } else if(array[x][y] > target) {
+      y--
+    } else {
+      x++
+    }
+  }
+  return false
+}
+
+console.log(Find(2,[[1,1]]))

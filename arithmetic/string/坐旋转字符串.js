@@ -6,7 +6,7 @@ function LeftRotateString(str, n)
 {
   // write code here
   if(!str || n > str.length ) {
-    return str;
+    return '';
   }
   while(n > 0) {
     let s = str.slice(0, 1);
