@@ -39,33 +39,49 @@ function GetNumberOfK(data, k)
 
 
 
+// 利二分法，找到第一次出现的位置和最后一次出现的位置, 也就是找到作左边和右边的边界
+
 function fun(data, k) {
+  if(!data.length) {
+    return 0;
+  }
   let lbound = 0, rbound = 0;
-  let l = 0, r = data.length - 1;
-  while(l <= k) {
-    let mid = Math.floor((l + r) / 2);
-    if(data[mid] < k) {
-      l = mid + 1;
+  // 搜索右边界 right
+  let i = 0, j = data.length - 1;
+  // [1,2,3,3,3,3,4,5]   3
+
+  // 找左边边界， 比目标值小的数
+  while (i <= j) {
+    let mid = Math.floor((i + j) / 2);
+    if (data[mid] >= k) {
+      j = mid - 1;
     } else {
-      r = mid;
+      i = mid + 1;
     }
   }
-  lbound = l;
+  lbound = j;
 
-  while (l < r) {
-    let mid = l + (r - l) / 2;
+  // 找右边边界, 比目标值大的数
+  i = 0; j = data.length - 1;
+
+  while( i <= j) {
+    let mid = Math.floor((i + j) / 2);
     if (data[mid] <= k) {
-      l = mid + 1;
-    }
-    else {
-      r = mid;
+      i = mid + 1;
+    } else {
+      j = mid - 1;
     }
   }
-  rbound = l;
 
-
-  return rbound - lbound;
+  rbound = i;
+  return rbound - lbound - 1;
 }
 
 
-console.log(GetNumberOfK([1,2,3,3,3,3,4,5],3));
+
+fun([1,2,3,3,3,3,4,5],3)
+// console.log();
+
+
+
+
