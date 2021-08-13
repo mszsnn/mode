@@ -19,42 +19,29 @@
  * @return bool布尔型
  */
 function hasPath( matrix ,  word ) {
-  // write code here
-  const map = {};
-  matrix.forEach( (f, i) => {
-    f.forEach( (s, j) => {
-      if(!map[s]) {
-        map[s] = [];
+  for (let i = 0; i < matrix.length ; i++) {
+    for (let j = 0; j < matrix[i].length ; j++) {
+      if(dfs(matrix, word, i, j, 0)) {
+        return true
       }
-      map[s].push(`${i}-${j}`)
-    })
-  })
-
-  let str = word.substring(1);
-  if(!map[str]) return false
-
-  for (let i = 0; i < map[str].length ; i++) {
-    const coords = map[str][i];
-    let have = [];
-    have.push(coords);
-    let [x, y] = coords.split('-');
-    let n = 1;
-    str = word.charAt(1);
-    while (str) {
-      if(!map[str]) return false;
-      let left = `${x + 1}-${y}`
-      let top = `${x}-${y - 1}`
-      let right = `${x + 1}-${y}`
-      let bottom = `${x}-${y + 1}`
-      
-      n++
     }
-
-    have = [];
   }
+  return false
+}
+function dfs(matrix, word, i, j, k) {
+  // 递归的退出条件
+  if (i < 0 || i >= matrix.length || j < 0 || j >= matrix[0].length || matrix[i][j] !== word[k]) {
+    return false
+  }
+  if(k === word.length - 1) return true;
+  // 查找四个方向
+  matrix[i][j] = null; // 防止回来 搜索下一个将前面的设置为空
+  let res = dfs(matrix, word, i + 1, j, k + 1) || dfs(matrix, word, i - 1, j, k + 1)
+    || dfs(matrix, word, i, j + 1, k + 1) || dfs(matrix, word, i, j - 1, k + 1);
 
+  matrix[i][j] = word[k]; // 能走到这里都代表匹配了  这里为啥需要重新给值， 因为值在处理的过程中被冲掉了
 
-  console.log(map);
+  return res;
 }
 
-hasPath([['a','b','c','e'],['s','f','c','s'],['a','d','e','e']],"abcced")
+console.log(hasPath([['a', 'b', 'c', 'e'], ['s', 'f', 'c', 's'], ['a', 'd', 'e', 'e']], "abcced"));

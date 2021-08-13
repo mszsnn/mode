@@ -22,27 +22,26 @@ function InversePairs(data)
 {
   // write code here
   if(!data.length) return 0;
-  let copy = JSON.parse(JSON.stringify(data))
-  return sort(data, 0, data.length - 1, copy);
+  let copy = [];
+  return sort(data, 0, data.length - 1, copy) % 1000000007;
 }
 
 
 function sort(data, start, end, copy) {
   if(start >= end) return 0;
-
   let mid = Math.floor((start + end) / 2);
-
-  console.log(start, mid, end);
   let left = sort(data, start, mid, copy);
   let right = sort(data, mid + 1, end, copy);
-
   let merge = Merge(data, start, mid, end, copy);
-
-  console.log('left + right + merge',left, right , merge);
   return left + right + merge;
 }
 
 function Merge(data, start, mid, end, copy) {
+  // 首先需要复制原始数组
+  for (let k = start; k <= end ; k++) {
+    copy[k] = data[k];
+  }
+
   let i = start;
   let j = mid + 1;
   let count = 0;
@@ -56,7 +55,6 @@ function Merge(data, start, mid, end, copy) {
       i++;
     } else {
       //  i j  都有的时候
-
       if(copy[i] <= copy[j]) {
         data[k] = copy[i];
         i++;
@@ -66,11 +64,7 @@ function Merge(data, start, mid, end, copy) {
         count += (mid - i + 1);
       }
     }
-
-
-
   }
-
   return count
 }
 
